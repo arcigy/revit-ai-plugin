@@ -43,11 +43,31 @@ async def startup_event():
     print("--- SERVER STARTUP EVENT FIRED ---")
     try:
         print("Initializing AI Orchestrator...")
-        orchestrator = AIOrchestrator()
-        print("AI Orchestrator initialized successfully.")
+        # Wrap AI Orchestrator init to prevent crash on bad creds/timeouts
+        try:
+            orchestrator = AIOrchestrator()
+            print("AI Orchestrator initialized successfully.")
+        except Exception as e:
+            print(f"ERROR initializing Orchestrator (Non-fatal for startup): {e}")
+            import traceback
+            traceback.print_exc()
+            orchestrator = None
+            
     except Exception as e:
-        print(f"CRITICAL ERROR initializing Orchestrator: {e}")
+        print(f"CRITICAL ERROR in startup_event: {e}")
         import traceback
+        traceback.print_exc()
+
+@app.get("/health")
+async def health_check():
+    """
+    Simple health check to verify container is running and reachable.
+    """
+    return {
+        "status": "healthy", 
+        "orchestrator_status": "active" if orchestrator else "inactive",
+        "env": "production"
+    }
         traceback.print_exc()
         orchestrator = None
 
