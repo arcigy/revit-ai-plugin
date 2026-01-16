@@ -1,46 +1,38 @@
 import os
 import sys
+import traceback
 
-# DEBUG: Print environment info immediately
-print(f"--- STARTUP DEBUG ---")
-print(f"Python: {sys.version}")
-print(f"CWD: {os.getcwd()}")
-print(f"Files in CWD: {os.listdir('.')}")
-print(f"Environment Keys: {list(os.environ.keys())}")
-
+# Fallback mechanism to keep the server alive even if the main app crashes
 try:
+    # Explicitly add current directory to path just in case
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    if current_dir not in sys.path:
+        sys.path.append(current_dir)
+        
+    print(f"--- ATTEMPTING TO IMPORT BACKEND ---")
+    print(f"CWD: {os.getcwd()}")
+    print(f"Path: {sys.path}")
+    
+    from Backend.main import app
+    print("--- SUCCESS: Backend.main imported ---")
+    
+except Exception as e:
+    print("CRITICAL: Failed to import main application")
+    traceback.print_exc()
+    
     from fastapi import FastAPI
-    import uvicorn
-    print("--- IMPORTS SUCCESSFUL ---")
-except ImportError as e:
-    print(f"--- FAILED TO IMPORT DEPENDENCIES: {e} ---")
-    sys.exit(1)
-
-app = FastAPI()
-
-@app.get("/")
-def root():
-    return {
-        "status": "online",
-        "message": "Debug mode active. The server is running.",
-        "env": {
-            "cwd": os.getcwd(),
-            "python": sys.version
-        }
-    }
-
-@app.post("/api/interpret")
-def dummy_interpret(data: dict):
-    print(f"Received data: {data}")
-    return {
-        "workflow": {
-            "steps": [
-                {"command": "ShowMessage", "parameters": {"message": "DEBUG MODE: Server is reachable!"}}
-            ]
-        }
-    }
+    from fastapi.responses import PlainTextResponse
+    
+    app = FastAPI()
+    error_msg = traceback.format_exc()
+    
+    @app.get("/")
+    @app.post("/{path:path}")
+    async def catch_all(path: str):
+        return PlainTextResponse(f"Deployment Error - Backend Import Failed:\n\n{error_msg}", status_code=500)
 
 if __name__ == "__main__":
+    import uvicorn
     port = int(os.getenv("PORT", 8000))
     print(f"--- STARTING SERVER ON PORT {port} ---")
     uvicorn.run(app, host="0.0.0.0", port=port)
