@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>RevitAIPlugin</Name>
+    <Assembly>RevitAIPlugin.dll</Assembly>
+    <FullClassName>RevitAIPlugin.App</FullClassName>
+    <ClientId>B62B3482-7476-4C52-959D-352934D2171E</ClientId>
+    <VendorId>com.example</VendorId>
+    <VendorDescription>Example AI Plugin Vendor</VendorDescription>
+  </AddIn>
+</RevitAddIns>

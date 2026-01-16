@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+venv/
+.venv/
+env/
+
+# C# / Visual Studio
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
