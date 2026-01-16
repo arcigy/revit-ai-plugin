@@ -1,4 +1,4 @@
-from models import CommandResponse, Workflow, ActionStep
+from Backend.models import CommandResponse, Workflow, ActionStep
 
 def parse_response(response_json: dict) -> CommandResponse:
     try:

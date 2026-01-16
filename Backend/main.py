@@ -14,21 +14,9 @@ try:
 except Exception as e:
     print(f"--- CRITICAL IMPORT ERROR (FastAPI): {e}")
 
-try:
-    # Try importing local modules with error handling
-    print("--- IMPORTING LOCAL MODULES ---")
-    from ai_orchestrator import AIOrchestrator
-    from models import CommandRequest, CommandResponse, FeedbackRequest
-    print("--- IMPORTS: LOCAL MODULES OK ---")
-except Exception as e:
-    print(f"--- CRITICAL IMPORT ERROR (Local): {e}")
-    # Try alternate import strategy if running from root
-    try:
-        from Backend.ai_orchestrator import AIOrchestrator
-        from Backend.models import CommandRequest, CommandResponse, FeedbackRequest
-        print("--- IMPORTS: ALTERNATE LOCAL MODULES OK ---")
-    except Exception as e2:
-        print(f"--- CRITICAL IMPORT ERROR (Alternate): {e2}")
+# Standard imports for running as a module from root
+from Backend.ai_orchestrator import AIOrchestrator
+from Backend.models import CommandRequest, CommandResponse, FeedbackRequest
 
 # ... Rest of the file ...
 

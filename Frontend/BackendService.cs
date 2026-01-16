@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 public class BackendService
 {
     private static readonly HttpClient client = new HttpClient();
-    private const string backendUrl = "http://127.0.0.1:8000"; // Placeholder URL for local development
+    private const string backendUrl = "https://revit-ai-plugin-production.up.railway.app";
 
     public async Task<CommandResponse> SendRequestAsync(CommandRequest payload)
     {

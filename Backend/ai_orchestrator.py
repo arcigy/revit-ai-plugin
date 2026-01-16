@@ -1,6 +1,6 @@
-from memory import MemoryManager
-from llm_client import LLMClient
-from models import CommandRequest, CommandResponse, Workflow, ActionStep
+from Backend.memory import MemoryManager
+from Backend.llm_client import LLMClient
+from Backend.models import CommandRequest, CommandResponse, Workflow, ActionStep
 
 class AIOrchestrator:
     def __init__(self):

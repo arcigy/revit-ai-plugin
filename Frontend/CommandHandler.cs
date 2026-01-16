@@ -12,7 +12,7 @@ namespace RevitAIPlugin
 {
     public class CommandHandler
     {
-        private readonly string _backendUrl = "http://127.0.0.1:8000"; // Placeholder URL
+        private readonly string _backendUrl = "https://revit-ai-plugin-production.up.railway.app";
         private readonly HttpClient _httpClient = new HttpClient();
 
         public bool ValidateInput(string command, List<Element> selectedElements, ImageContext image)

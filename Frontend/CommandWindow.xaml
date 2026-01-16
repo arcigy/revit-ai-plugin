@@ -1,0 +1,40 @@
+<Window x:Class="RevitAIPlugin.CommandWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Revit AI Command" Height="450" Width="400" WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Command Input -->
+        <GroupBox Header="🧠 AI Command" Grid.Row="0" Margin="0,0,0,10">
+            <StackPanel Margin="5">
+                <TextBox Name="txtCommand" Height="60" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,0,0,5"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Context Image -->
+        <GroupBox Header="📸 Context Image" Grid.Row="1" Margin="0,0,0,10">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <Button Name="BtnUploadImage" Content="Upload Image" Click="BtnUploadImage_Click" Padding="5"/>
+                <Label Name="lblImageName" Content="No image selected" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Revit Selection -->
+        <GroupBox Header="🎯 Revit Selection" Grid.Row="2" Margin="0,0,0,10">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <Button Name="BtnUseSelected" Content="Use Selected Elements" Click="BtnUseSelected_Click" Padding="5"/>
+                <Label Name="lblSelectionCount" Content="0 elements selected" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Execute Button -->
+        <Button Name="BtnExecute" Grid.Row="4" Content="Execute Command" Click="BtnExecute_Click" Height="40" FontSize="14" FontWeight="Bold" Margin="0,10,0,0"/>
+    </Grid>
+</Window>

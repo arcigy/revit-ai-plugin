@@ -48,7 +48,7 @@ namespace RevitAIPlugin
             var selectedElements = ids.Select(id => {
                 Element ele = _uidoc.Document.GetElement(id);
                 return new SelectedElement {
-                    Id = id.IntegerValue,
+                    Id = id.Value,
                     Category = ele.Category?.Name,
                     Name = ele.Name
                 };

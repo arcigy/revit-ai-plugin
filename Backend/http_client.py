@@ -1,7 +1,7 @@
 import httpx
 import json
-from models import CommandResponse
-from response_parser import parse_response
+from Backend.models import CommandResponse
+from Backend.response_parser import parse_response
 
 class HTTPClient:
     def __init__(self, base_url: str, api_key: str, timeout: int = 30):

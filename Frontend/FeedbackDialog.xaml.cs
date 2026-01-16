@@ -12,7 +12,7 @@ namespace RevitAIPlugin
             InitializeComponent();
         }
 
-        public static FeedbackResult Show()
+        public static FeedbackResult ShowFeedback()
         {
             var dialog = new FeedbackDialog();
             bool? result = dialog.ShowDialog();
