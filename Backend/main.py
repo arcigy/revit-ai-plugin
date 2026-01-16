@@ -1,13 +1,36 @@
+print("--- LOADING MAIN.PY ---")
 import os
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List, Optional, Dict
+import sys
 
-# from dotenv import load_dotenv
-# load_dotenv()
+# Print current directory and path for debugging
+print(f"Current Directory: {os.getcwd()}")
+print(f"Python Path: {sys.path}")
 
-from ai_orchestrator import AIOrchestrator
-from models import CommandRequest, CommandResponse, FeedbackRequest
+try:
+    from fastapi import FastAPI, HTTPException
+    from pydantic import BaseModel
+    from typing import List, Optional, Dict
+    print("--- IMPORTS: FASTAPI OK ---")
+except Exception as e:
+    print(f"--- CRITICAL IMPORT ERROR (FastAPI): {e}")
+
+try:
+    # Try importing local modules with error handling
+    print("--- IMPORTING LOCAL MODULES ---")
+    from ai_orchestrator import AIOrchestrator
+    from models import CommandRequest, CommandResponse, FeedbackRequest
+    print("--- IMPORTS: LOCAL MODULES OK ---")
+except Exception as e:
+    print(f"--- CRITICAL IMPORT ERROR (Local): {e}")
+    # Try alternate import strategy if running from root
+    try:
+        from Backend.ai_orchestrator import AIOrchestrator
+        from Backend.models import CommandRequest, CommandResponse, FeedbackRequest
+        print("--- IMPORTS: ALTERNATE LOCAL MODULES OK ---")
+    except Exception as e2:
+        print(f"--- CRITICAL IMPORT ERROR (Alternate): {e2}")
+
+# ... Rest of the file ...
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://placeholder.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY", "FAKE_KEY_123")
@@ -22,7 +45,7 @@ orchestrator = None
 @app.on_event("startup")
 async def startup_event():
     global orchestrator
-    print("--- SERVER STARTUP INITIATED ---")
+    print("--- SERVER STARTUP EVENT FIRED ---")
     try:
         print("Initializing AI Orchestrator...")
         orchestrator = AIOrchestrator()
@@ -32,6 +55,10 @@ async def startup_event():
         import traceback
         traceback.print_exc()
         orchestrator = None
+
+@app.get("/")
+async def root():
+    return {"message": "Revit AI Plugin Backend is running!", "status": "ok"}
 
 @app.post("/api/interpret", response_model=CommandResponse)
 async def interpret_command(request: CommandRequest):
@@ -66,7 +93,3 @@ async def receive_feedback(feedback: FeedbackRequest):
     except Exception as e:
         print(f"Error storing feedback: {e}")
         return {"status": "error", "detail": str(e)}
-
-@app.get("/")
-async def root():
-    return {"message": "Revit AI Plugin Backend is running!"}
