@@ -5,11 +5,15 @@ class MemoryManager:
     def __init__(self):
         self.supabase_url = os.getenv("SUPABASE_URL", "https://placeholder.supabase.co")
         self.supabase_key = os.getenv("SUPABASE_KEY", "FAKE_KEY_123")
-        if self.supabase_url and self.supabase_key:
-            self.client: Client = create_client(self.supabase_url, self.supabase_key)
-        else:
+        try:
+            if self.supabase_url and self.supabase_key and "placeholder" not in self.supabase_url:
+                self.client: Client = create_client(self.supabase_url, self.supabase_key)
+            else:
+                self.client = None
+                print("Supabase credentials not found or are placeholders. MemoryManager will not be functional.")
+        except Exception as e:
             self.client = None
-            print("Supabase credentials not found. MemoryManager will not be functional.")
+            print(f"Failed to initialize Supabase client: {e}")
 
     def store_history(self, command_request, command_response):
         """
