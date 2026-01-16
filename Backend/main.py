@@ -15,29 +15,57 @@ AI_API_URL = os.getenv("AI_API_URL", "https://api.placeholder.ai/v1")
 AI_API_KEY = os.getenv("AI_API_KEY", "FAKE_AI_KEY_456")
 
 app = FastAPI()
-orchestrator = AIOrchestrator()
+
+# Global orchestrator variable
+orchestrator = None
+
+@app.on_event("startup")
+async def startup_event():
+    global orchestrator
+    print("--- SERVER STARTUP INITIATED ---")
+    try:
+        print("Initializing AI Orchestrator...")
+        orchestrator = AIOrchestrator()
+        print("AI Orchestrator initialized successfully.")
+    except Exception as e:
+        print(f"CRITICAL ERROR initializing Orchestrator: {e}")
+        import traceback
+        traceback.print_exc()
+        orchestrator = None
 
 @app.post("/api/interpret", response_model=CommandResponse)
 async def interpret_command(request: CommandRequest):
     """
     Interprets the user command using the AI orchestrator.
     """
+    if orchestrator is None:
+        raise HTTPException(status_code=500, detail="Backend is not fully initialized. Check server logs.")
+        
     print(f"Received command: {request.command_text}")
-    response = await orchestrator.process_command(request)
-    if response.errors:
-        raise HTTPException(status_code=500, detail=response.errors)
-    return response
+    try:
+        response = await orchestrator.process_command(request)
+        if response.errors:
+            raise HTTPException(status_code=500, detail=response.errors)
+        return response
+    except Exception as e:
+        print(f"Error processing command: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/feedback")
 async def receive_feedback(feedback: FeedbackRequest):
     """
     Receives feedback and stores it using the memory manager.
     """
+    if orchestrator is None:
+        return {"status": "error", "message": "Orchestrator not initialized"}
+
     print(f"Received feedback for command: {feedback.command_text}")
-    # In a real app, you'd likely need a request_id to associate feedback with a command
-    # For now, we'll just log it.
-    orchestrator.memory_manager.store_feedback("placeholder_request_id", feedback.success, feedback.note)
-    return {"status": "feedback received"}
+    try:
+        orchestrator.memory_manager.store_feedback("placeholder_request_id", feedback.success, feedback.note)
+        return {"status": "feedback received"}
+    except Exception as e:
+        print(f"Error storing feedback: {e}")
+        return {"status": "error", "detail": str(e)}
 
 @app.get("/")
 async def root():
