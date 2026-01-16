@@ -1,8 +1,15 @@
-print("--- LOADING MAIN.PY ---")
-import os
-import sys
 
-# Print current directory and path for debugging
+# Standard imports for running as a module from root
+import sys
+import os
+
+# Add parent directory to sys.path to ensure 'Backend' package can be found
+# even if running from inside the Backend directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
+
 print(f"Current Directory: {os.getcwd()}")
 print(f"Python Path: {sys.path}")
 
